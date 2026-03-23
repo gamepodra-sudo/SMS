@@ -1,0 +1,1275 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Dashboard | EduManage Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=yes">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+    <!-- Google Font: Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+    
+    <style>
+        /* Dark Theme Variables - Matching Login Page */
+        :root {
+            --primary-color: #6c5ce7;
+            --primary-dark: #5649c0;
+            --primary-light: #8a7cf0;
+            --secondary-color: #00cec9;
+            --accent-color: #fd79a8;
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-input: #25253a;
+            --text-primary: #ffffff;
+            --text-secondary: #b8b8d4;
+            --text-muted: #6c6c8c;
+            --border-color: #2d2d44;
+            --success: #00b894;
+            --warning: #fdcb6e;
+            --danger: #d63031;
+            --info: #0984e3;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+        }
+
+        /* Wrapper */
+        .wrapper {
+            background: var(--bg-dark);
+        }
+
+        /* Navbar */
+        .main-header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--text-secondary) !important;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary-light) !important;
+        }
+
+        .navbar-nav .nav-link.active {
+            color: var(--primary-light) !important;
+        }
+
+        .form-control-navbar {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .form-control-navbar:focus {
+            background: var(--bg-card);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        }
+
+        .btn-navbar {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+        }
+
+        .btn-navbar:hover {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Dropdown Menus */
+        .dropdown-menu {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dropdown-item {
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--primary-light);
+        }
+
+        .dropdown-divider {
+            border-color: var(--border-color);
+        }
+
+        .dropdown-header {
+            color: var(--text-muted);
+        }
+
+        /* Badges */
+        .badge-danger {
+            background: linear-gradient(135deg, #d63031, #e84342);
+        }
+
+        .badge-warning {
+            background: linear-gradient(135deg, #fdcb6e, #e17055);
+            color: #2d3436;
+        }
+
+        /* Content Wrapper */
+        .content-wrapper {
+            background: var(--bg-dark);
+        }
+
+        /* Content Header */
+        .content-header {
+            background: linear-gradient(135deg, var(--bg-card) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .content-header h1 {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 24px;
+        }
+
+        .breadcrumb {
+            background: transparent;
+        }
+
+        .breadcrumb-item a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        .breadcrumb-item.active {
+            color: var(--text-muted);
+        }
+
+        .breadcrumb-item + .breadcrumb-item::before {
+            color: var(--text-muted);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: var(--shadow-md);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--bg-input) 0%, transparent 100%);
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-top-left-radius: 15px !important;
+            border-top-right-radius: 15px !important;
+        }
+
+        .card-title {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        .card-tools .btn-tool {
+            color: var(--text-muted);
+            background: transparent;
+            border: none;
+            padding: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .card-tools .btn-tool:hover {
+            background: rgba(108, 92, 231, 0.1);
+            color: var(--primary-light);
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .card-footer {
+            background: linear-gradient(135deg, var(--bg-input) 0%, transparent 100%);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-bottom-left-radius: 15px !important;
+            border-bottom-right-radius: 15px !important;
+        }
+
+        /* Small Boxes (Stat Cards) */
+        .small-box {
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .small-box:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .small-box.bg-info {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7) !important;
+        }
+
+        .small-box.bg-success {
+            background: linear-gradient(135deg, #00b894, #00cec9) !important;
+        }
+
+        .small-box.bg-warning {
+            background: linear-gradient(135deg, #fdcb6e, #e17055) !important;
+        }
+
+        .small-box.bg-danger {
+            background: linear-gradient(135deg, #d63031, #e84342) !important;
+        }
+
+        .small-box .inner {
+            padding: 20px;
+        }
+
+        .small-box .inner h3 {
+            font-weight: 600;
+            font-size: 32px;
+            color: white;
+            margin: 0 0 5px 0;
+        }
+
+        .small-box .inner p {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .small-box .icon {
+            color: rgba(255, 255, 255, 0.2);
+            font-size: 70px;
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .small-box:hover .icon {
+            transform: scale(1.1);
+        }
+
+        .small-box-footer {
+            background: rgba(0, 0, 0, 0.2);
+            color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            display: block;
+            text-align: center;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .small-box-footer:hover {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        /* Direct Chat */
+        .direct-chat {
+            background: var(--bg-card);
+        }
+
+        .direct-chat-messages {
+            background: var(--bg-input);
+            border-radius: 10px;
+            padding: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .direct-chat-msg {
+            margin-bottom: 15px;
+        }
+
+        .direct-chat-infos {
+            margin-bottom: 5px;
+        }
+
+        .direct-chat-name {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .direct-chat-timestamp {
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+
+        .direct-chat-text {
+            background: linear-gradient(135deg, var(--bg-card), var(--bg-input));
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            padding: 10px 15px;
+            font-size: 13px;
+            position: relative;
+            margin-left: 50px;
+        }
+
+        .direct-chat-msg.right .direct-chat-text {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: white;
+            margin-left: 0;
+            margin-right: 50px;
+        }
+
+        .direct-chat-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-color);
+            float: left;
+            margin-right: 10px;
+        }
+
+        .direct-chat-msg.right .direct-chat-img {
+            float: right;
+            margin-left: 10px;
+            margin-right: 0;
+        }
+
+        /* Contacts List */
+        .contacts-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .contacts-list li {
+            border-bottom: 1px solid var(--border-color);
+            padding: 10px;
+            transition: background 0.3s ease;
+        }
+
+        .contacts-list li:hover {
+            background: rgba(108, 92, 231, 0.05);
+        }
+
+        .contacts-list li:last-child {
+            border-bottom: none;
+        }
+
+        .contacts-list-img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            float: left;
+            margin-right: 10px;
+        }
+
+        .contacts-list-info {
+            overflow: hidden;
+        }
+
+        .contacts-list-name {
+            color: var(--text-primary);
+            font-weight: 500;
+            font-size: 13px;
+            display: block;
+        }
+
+        .contacts-list-date {
+            color: var(--text-muted);
+            font-size: 11px;
+            float: right;
+        }
+
+        .contacts-list-msg {
+            color: var(--text-secondary);
+            font-size: 12px;
+            display: block;
+            margin-top: 2px;
+        }
+
+        /* Todo List */
+        .todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .todo-list li {
+            background: linear-gradient(135deg, var(--bg-input), var(--bg-card));
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            padding: 15px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .todo-list li:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+        }
+
+        .todo-list .handle {
+            color: var(--text-muted);
+            cursor: move;
+        }
+
+        .todo-list .text {
+            flex: 1;
+            font-size: 13px;
+        }
+
+        .todo-list .badge {
+            padding: 5px 10px;
+            border-radius: 8px;
+            font-weight: 400;
+            font-size: 11px;
+        }
+
+        .todo-list .tools {
+            color: var(--text-muted);
+            display: flex;
+            gap: 8px;
+        }
+
+        .todo-list .tools i {
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .todo-list .tools i:hover {
+            color: var(--primary-light);
+        }
+
+        /* Gradient Cards */
+        .bg-gradient-primary {
+            background: linear-gradient(135deg, #0984e3, #6c5ce7) !important;
+        }
+
+        .bg-gradient-info {
+            background: linear-gradient(135deg, #00cec9, #0984e3) !important;
+        }
+
+        .bg-gradient-success {
+            background: linear-gradient(135deg, #00b894, #00cec9) !important;
+        }
+
+        /* Footer */
+        .main-footer {
+            background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 15px 20px;
+        }
+
+        .main-footer a {
+            color: var(--primary-light);
+            text-decoration: none;
+        }
+
+        .main-footer a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .content-header {
+                padding: 15px;
+            }
+            
+            .content-header h1 {
+                font-size: 20px;
+            }
+            
+            .card-header {
+                padding: 12px 15px;
+            }
+            
+            .card-body {
+                padding: 15px;
+            }
+            
+            .small-box .inner h3 {
+                font-size: 24px;
+            }
+            
+            .small-box .inner p {
+                font-size: 12px;
+            }
+            
+            .small-box .icon {
+                font-size: 50px;
+            }
+        }
+
+        /* Animation */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card, .small-box {
+            animation: slideIn 0.5s ease forwards;
+        }
+
+        /* Fix for text colors in gradient cards */
+        .bg-gradient-primary *,
+        .bg-gradient-info *,
+        .bg-gradient-success * {
+            color: white;
+        }
+
+        .bg-gradient-primary .card-tools .btn-tool,
+        .bg-gradient-info .card-tools .btn-tool,
+        .bg-gradient-success .card-tools .btn-tool {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .bg-gradient-primary .card-tools .btn-tool:hover,
+        .bg-gradient-info .card-tools .btn-tool:hover,
+        .bg-gradient-success .card-tools .btn-tool:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Fix for charts */
+        .chart {
+            position: relative;
+            max-height: 300px;
+        }
+
+        /* Fix for knobs */
+        .knob {
+            font-weight: 600 !important;
+            color: white !important;
+        }
+
+        /* Page title variable */
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title i {
+            color: var(--primary-light);
+        }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#">
+                        <i class="fas fa-bars"></i>
+                    </a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="index3.html" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="#" class="nav-link">Contact</a>
+                </li>
+            </ul>
+
+            <!-- SEARCH FORM -->
+            <form class="form-inline ml-3">
+                <div class="input-group input-group-sm">
+                    <input class="form-control form-control-navbar" type="search" placeholder="Search..."
+                        aria-label="Search">
+                    <div class="input-group-append">
+                        <button class="btn btn-navbar" type="submit">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Messages Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-comments"></i>
+                        <span class="badge badge-danger navbar-badge">3</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">3 Messages</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <div class="media">
+                                <img src="{% static 'dist/img/user1-128x128.jpg' %}" alt="User Avatar"
+                                    class="img-size-50 mr-3 img-circle">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Brad Diesel
+                                        <span class="float-right text-sm text-danger"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">Call me whenever you can...</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <div class="media">
+                                <img src="{% static 'dist/img/user8-128x128.jpg' %}" alt="User Avatar"
+                                    class="img-size-50 img-circle mr-3">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        John Pierce
+                                        <span class="float-right text-sm text-muted"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">I got your message bro</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <div class="media">
+                                <img src="{% static 'dist/img/user3-128x128.jpg' %}" alt="User Avatar"
+                                    class="img-size-50 img-circle mr-3">
+                                <div class="media-body">
+                                    <h3 class="dropdown-item-title">
+                                        Nora Silvester
+                                        <span class="float-right text-sm text-warning"><i class="fas fa-star"></i></span>
+                                    </h3>
+                                    <p class="text-sm">The subject goes here</p>
+                                    <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i> 4 Hours Ago</p>
+                                </div>
+                            </div>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Messages</a>
+                    </div>
+                </li>
+                <!-- Notifications Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <i class="far fa-bell"></i>
+                        <span class="badge badge-warning navbar-badge">15</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">15 Notifications</span>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-envelope mr-2"></i> 4 new messages
+                            <span class="float-right text-muted text-sm">3 mins</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-users mr-2"></i> 8 friend requests
+                            <span class="float-right text-muted text-sm">12 hours</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-file mr-2"></i> 3 new reports
+                            <span class="float-right text-muted text-sm">2 days</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container - Using your existing sidebar code -->
+        {% include 'main_app/sidebar_template.html' %}
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Dashboard</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <!-- Small boxes (Stat box) -->
+                    <div class="row">
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-info">
+                                <div class="inner">
+                                    <h3>150</h3>
+                                    <p>New Orders</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-bag"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-success">
+                                <div class="inner">
+                                    <h3>53<sup style="font-size: 20px">%</sup></h3>
+                                    <p>Bounce Rate</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-stats-bars"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-warning">
+                                <div class="inner">
+                                    <h3>44</h3>
+                                    <p>User Registrations</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-person-add"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-6">
+                            <div class="small-box bg-danger">
+                                <div class="inner">
+                                    <h3>65</h3>
+                                    <p>Unique Visitors</p>
+                                </div>
+                                <div class="icon">
+                                    <i class="ion ion-pie-graph"></i>
+                                </div>
+                                <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+
+                    <!-- Main row -->
+                    <div class="row">
+                        <!-- Left col -->
+                        <section class="col-lg-7 connectedSortable">
+                            <!-- Custom tabs (Charts with tabs)-->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-chart-pie mr-1"></i>
+                                        {{page_title}}
+                                    </h3>
+                                    <div class="card-tools">
+                                        <ul class="nav nav-pills ml-auto">
+                                            <li class="nav-item">
+                                                <a class="nav-link active" href="#revenue-chart"
+                                                    data-toggle="tab">Area</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="tab-content p-0">
+                                        <div class="chart tab-pane active" id="revenue-chart"
+                                            style="position: relative; height: 300px;">
+                                            <canvas id="revenue-chart-canvas" height="300"
+                                                style="height: 300px;"></canvas>
+                                        </div>
+                                        <div class="chart tab-pane" id="sales-chart"
+                                            style="position: relative; height: 300px;">
+                                            <canvas id="sales-chart-canvas" height="300"
+                                                style="height: 300px;"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card -->
+
+                            <!-- DIRECT CHAT -->
+                            <div class="card direct-chat">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-comments mr-1"></i>
+                                        {{page_title}}
+                                    </h3>
+                                    <div class="card-tools">
+                                        <span data-toggle="tooltip" title="3 New Messages"
+                                            class="badge badge-primary">3</span>
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-tool" data-toggle="tooltip"
+                                            title="Contacts" data-widget="chat-pane-toggle">
+                                            <i class="fas fa-comments"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="direct-chat-messages">
+                                        <!-- Message. Default to the left -->
+                                        <div class="direct-chat-msg">
+                                            <div class="direct-chat-infos clearfix">
+                                                <span class="direct-chat-name float-left">Alexander Pierce</span>
+                                                <span class="direct-chat-timestamp float-right">23 Jan 2:00 pm</span>
+                                            </div>
+                                            <img class="direct-chat-img"
+                                                src="{% static 'dist/img/user1-128x128.jpg' %}"
+                                                alt="message user image">
+                                            <div class="direct-chat-text">
+                                                Is this template really for free? That's unbelievable!
+                                            </div>
+                                        </div>
+                                        <!-- Message to the right -->
+                                        <div class="direct-chat-msg right">
+                                            <div class="direct-chat-infos clearfix">
+                                                <span class="direct-chat-name float-right">Sarah Bullock</span>
+                                                <span class="direct-chat-timestamp float-left">23 Jan 2:05 pm</span>
+                                            </div>
+                                            <img class="direct-chat-img"
+                                                src="{% static 'dist/img/user3-128x128.jpg' %}"
+                                                alt="message user image">
+                                            <div class="direct-chat-text">
+                                                You better believe it!
+                                            </div>
+                                        </div>
+                                        <!-- Message. Default to the left -->
+                                        <div class="direct-chat-msg">
+                                            <div class="direct-chat-infos clearfix">
+                                                <span class="direct-chat-name float-left">Alexander Pierce</span>
+                                                <span class="direct-chat-timestamp float-right">23 Jan 5:37 pm</span>
+                                            </div>
+                                            <img class="direct-chat-img"
+                                                src="{% static 'dist/img/user1-128x128.jpg' %}"
+                                                alt="message user image">
+                                            <div class="direct-chat-text">
+                                                Working with AdminLTE on a great new app! Wanna join?
+                                            </div>
+                                        </div>
+                                        <!-- Message to the right -->
+                                        <div class="direct-chat-msg right">
+                                            <div class="direct-chat-infos clearfix">
+                                                <span class="direct-chat-name float-right">Sarah Bullock</span>
+                                                <span class="direct-chat-timestamp float-left">23 Jan 6:10 pm</span>
+                                            </div>
+                                            <img class="direct-chat-img"
+                                                src="{% static 'dist/img/user3-128x128.jpg' %}"
+                                                alt="message user image">
+                                            <div class="direct-chat-text">
+                                                I would love to.
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Contacts are loaded here -->
+                                    <div class="direct-chat-contacts">
+                                        <ul class="contacts-list">
+                                            <li>
+                                                <a href="#">
+                                                    <img class="contacts-list-img"
+                                                        src="{% static 'dist/img/user1-128x128.jpg' %}">
+                                                    <div class="contacts-list-info">
+                                                        <span class="contacts-list-name">
+                                                            Count Dracula
+                                                            <small class="contacts-list-date float-right">2/28/2015</small>
+                                                        </span>
+                                                        <span class="contacts-list-msg">How have you been? I was...</span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <img class="contacts-list-img"
+                                                        src="{% static 'dist/img/user7-128x128.jpg' %}">
+                                                    <div class="contacts-list-info">
+                                                        <span class="contacts-list-name">
+                                                            Sarah Doe
+                                                            <small class="contacts-list-date float-right">2/23/2015</small>
+                                                        </span>
+                                                        <span class="contacts-list-msg">I will be waiting for...</span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="#">
+                                                    <img class="contacts-list-img"
+                                                        src="{% static 'dist/img/user3-128x128.jpg' %}">
+                                                    <div class="contacts-list-info">
+                                                        <span class="contacts-list-name">
+                                                            Nadia Jolie
+                                                            <small class="contacts-list-date float-right">2/20/2015</small>
+                                                        </span>
+                                                        <span class="contacts-list-msg">I'll call you back at...</span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <form action="#" method="post">
+                                        <div class="input-group">
+                                            <input type="text" name="message" placeholder="Type Message ..."
+                                                class="form-control">
+                                            <span class="input-group-append">
+                                                <button type="button" class="btn btn-primary">Send</button>
+                                            </span>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--/.direct-chat -->
+
+                            <!-- TO DO List -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">
+                                        <i class="ion ion-clipboard mr-1"></i>
+                                        {{page_title}}
+                                    </h3>
+                                    <div class="card-tools">
+                                        <ul class="pagination pagination-sm">
+                                            <li class="page-item"><a href="#" class="page-link">&laquo;</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">1</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">2</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">3</a></li>
+                                            <li class="page-item"><a href="#" class="page-link">&raquo;</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="todo-list" data-widget="todo-list">
+                                        <li>
+                                            <span class="handle">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </span>
+                                            <div class="icheck-primary d-inline ml-2">
+                                                <input type="checkbox" value="" name="todo1" id="todoCheck1">
+                                                <label for="todoCheck1"></label>
+                                            </div>
+                                            <span class="text">Design a nice theme</span>
+                                            <small class="badge badge-danger"><i class="far fa-clock"></i> 2 mins</small>
+                                            <div class="tools">
+                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-trash-o"></i>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="handle">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </span>
+                                            <div class="icheck-primary d-inline ml-2">
+                                                <input type="checkbox" value="" name="todo2" id="todoCheck2" checked>
+                                                <label for="todoCheck2"></label>
+                                            </div>
+                                            <span class="text">Make the theme responsive</span>
+                                            <small class="badge badge-info"><i class="far fa-clock"></i> 4 hours</small>
+                                            <div class="tools">
+                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-trash-o"></i>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="handle">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </span>
+                                            <div class="icheck-primary d-inline ml-2">
+                                                <input type="checkbox" value="" name="todo3" id="todoCheck3">
+                                                <label for="todoCheck3"></label>
+                                            </div>
+                                            <span class="text">Let theme shine like a star</span>
+                                            <small class="badge badge-warning"><i class="far fa-clock"></i> 1 day</small>
+                                            <div class="tools">
+                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-trash-o"></i>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            <span class="handle">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </span>
+                                            <div class="icheck-primary d-inline ml-2">
+                                                <input type="checkbox" value="" name="todo4" id="todoCheck4">
+                                                <label for="todoCheck4"></label>
+                                            </div>
+                                            <span class="text">Check your messages and notifications</span>
+                                            <small class="badge badge-primary"><i class="far fa-clock"></i> 1 week</small>
+                                            <div class="tools">
+                                                <i class="fas fa-edit"></i>
+                                                <i class="fas fa-trash-o"></i>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="card-footer clearfix">
+                                    <button type="button" class="btn btn-primary float-right">
+                                        <i class="fas fa-plus"></i> Add item
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /.card -->
+                        </section>
+                        <!-- /.Left col -->
+
+                        <!-- right col -->
+                        <section class="col-lg-5 connectedSortable">
+                            <!-- Map card -->
+                            <div class="card bg-gradient-primary">
+                                <div class="card-header border-0">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-map-marker-alt mr-1"></i>
+                                        {{page_title}}
+                                    </h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-primary btn-sm daterange"
+                                            data-toggle="tooltip" title="Date range">
+                                            <i class="far fa-calendar-alt"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-primary btn-sm" data-card-widget="collapse"
+                                            data-toggle="tooltip" title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div id="world-map" style="height: 250px; width: 100%;"></div>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="row">
+                                        <div class="col-4 text-center">
+                                            <div id="sparkline-1"></div>
+                                            <div class="text-white">Visitors</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <div id="sparkline-2"></div>
+                                            <div class="text-white">Online</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <div id="sparkline-3"></div>
+                                            <div class="text-white">Sales</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card -->
+
+                            <!-- solid sales graph -->
+                            <div class="card bg-gradient-info">
+                                <div class="card-header border-0">
+                                    <h3 class="card-title">
+                                        <i class="fas fa-th mr-1"></i>
+                                        {{page_title}}
+                                    </h3>
+                                    <div class="card-tools">
+                                        <button type="button" class="btn bg-info btn-sm" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn bg-info btn-sm" data-card-widget="remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <canvas class="chart" id="line-chart"
+                                        style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                                </div>
+                                <div class="card-footer bg-transparent">
+                                    <div class="row">
+                                        <div class="col-4 text-center">
+                                            <input type="text" class="knob" data-readonly="true" value="20"
+                                                data-width="60" data-height="60" data-fgColor="#00cec9">
+                                            <div class="text-white">Mail-Orders</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <input type="text" class="knob" data-readonly="true" value="50"
+                                                data-width="60" data-height="60" data-fgColor="#00cec9">
+                                            <div class="text-white">Online</div>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <input type="text" class="knob" data-readonly="true" value="30"
+                                                data-width="60" data-height="60" data-fgColor="#00cec9">
+                                            <div class="text-white">In-Store</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card -->
+
+                            <!-- Calendar -->
+                            <div class="card bg-gradient-success">
+                                <div class="card-header border-0">
+                                    <h3 class="card-title">
+                                        <i class="far fa-calendar-alt mr-1"></i>
+                                        {{page_title}}
+                                    </h3>
+                                    <div class="card-tools">
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-success btn-sm dropdown-toggle"
+                                                data-toggle="dropdown">
+                                                <i class="fas fa-bars"></i>
+                                            </button>
+                                            <div class="dropdown-menu float-right" role="menu">
+                                                <a href="#" class="dropdown-item">Add new event</a>
+                                                <a href="#" class="dropdown-item">Clear events</a>
+                                                <div class="dropdown-divider"></div>
+                                                <a href="#" class="dropdown-item">View calendar</a>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-success btn-sm" data-card-widget="remove">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div id="calendar" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <!-- /.card -->
+                        </section>
+                        <!-- right col -->
+                    </div>
+                    <!-- /.row (main row) -->
+                </div>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2024 <a href="#">EduManage Pro</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                <b>Version</b> 1.0.0
+            </div>
+        </footer>
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <!-- jQuery UI 1.11.4 -->
+    <script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
+    <script>
+        $.widget.bridge('uibutton', $.ui.button)
+    </script>
+    <!-- Bootstrap 4 -->
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- ChartJS -->
+    <script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+    <!-- Sparkline -->
+    <script src="{% static 'plugins/sparklines/sparkline.js' %}"></script>
+    <!-- JQVMap -->
+    <script src="{% static 'plugins/jqvmap/jquery.vmap.min.js' %}"></script>
+    <script src="{% static 'plugins/jqvmap/maps/jquery.vmap.usa.js' %}"></script>
+    <!-- jQuery Knob Chart -->
+    <script src="{% static 'plugins/jquery-knob/jquery.knob.min.js' %}"></script>
+    <!-- daterangepicker -->
+    <script src="{% static 'plugins/moment/moment.min.js' %}"></script>
+    <script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <!-- Tempusdominus Bootstrap 4 -->
+    <script src="{% static 'plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js' %}"></script>
+    <!-- Summernote -->
+    <script src="{% static 'plugins/summernote/summernote-bs4.min.js' %}"></script>
+    <!-- overlayScrollbars -->
+    <script src="{% static 'plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js' %}"></script>
+    <!-- AdminLTE App -->
+    <script src="{% static 'dist/js/adminlte.js' %}"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="{% static 'dist/js/pages/dashboard.js' %}"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="{% static 'dist/js/demo.js' %}"></script>
+</body>
+</html>

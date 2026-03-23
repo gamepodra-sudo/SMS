@@ -1,0 +1,684 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="page-header">
+                    <h2>Leave Application</h2>
+                    <p>Apply for leave and view your leave history</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Leave Application Form -->
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-paper-plane card-icon"></i>
+                            Apply for Leave
+                        </h3>
+                        <div class="dashboard-card-tools">
+                            <button type="button" class="btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button type="button" class="btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        {% include "main_app/form_template.html" with messages=messages form=form button_text="Submit Leave Request" %}
+                    </div>
+                </div>
+
+                <!-- Leave History Table -->
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-history card-icon"></i>
+                            Leave History
+                        </h3>
+                        <div class="dashboard-card-tools">
+                            <button type="button" class="btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button type="button" class="btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dashboard-card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Message</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for leave in leave_history %}
+                                    <tr>
+                                        <td class="text-muted">{{forloop.counter|stringformat:"02d"}}</td>
+                                        <td>{{leave.date|date:"M d, Y"}}</td>
+                                        <td class="message-cell">{{leave.message|truncatechars:50}}</td>
+                                        <td>
+                                            {% if leave.status == 0 %}
+                                                <span class="badge badge-pending">
+                                                    <i class="fas fa-clock"></i>
+                                                    Pending
+                                                </span>
+                                            {% elif leave.status == 1 %}
+                                                <span class="badge badge-approved">
+                                                    <i class="fas fa-check-circle"></i>
+                                                    Approved
+                                                </span>
+                                            {% else %}
+                                                <span class="badge badge-rejected">
+                                                    <i class="fas fa-times-circle"></i>
+                                                    Rejected
+                                                </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if leave.status == 0 %}
+                                                <button class="action-btn cancel-btn" title="Cancel Request">
+                                                    <i class="fas fa-ban"></i>
+                                                </button>
+                                            {% else %}
+                                                <button class="action-btn view-btn" title="View Details">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="empty-state">
+                                            <i class="fas fa-calendar-times empty-icon"></i>
+                                            <p>No leave applications found</p>
+                                            <span class="empty-hint">Use the form above to apply for leave</span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- In the form section, update the form-control class styling -->
+
+<style>
+    /* Dark Theme Variables - Matching Login Page */
+    :root {
+        --primary-color: #6c5ce7;
+        --primary-dark: #5649c0;
+        --primary-light: #8a7cf0;
+        --secondary-color: #00cec9;
+        --accent-color: #fd79a8;
+        --bg-dark: #0f0f1a;
+        --bg-card: #1a1a2e;
+        --bg-input: #25253a;
+        --bg-hover: rgba(108, 92, 231, 0.1);
+        --text-primary: #ffffff;
+        --text-secondary: #b8b8d4;
+        --text-muted: #6c6c8c;
+        --border-color: #2d2d44;
+        --success: #00b894;
+        --warning: #fdcb6e;
+        --danger: #d63031;
+        --info: #0984e3;
+        --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+        --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Page Header */
+    .page-header {
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 24px;
+    }
+
+    .page-header h2 {
+        font-size: 28px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 8px 0;
+        letter-spacing: -0.3px;
+    }
+
+    .page-header p {
+        margin: 0;
+        font-size: 15px;
+        color: var(--text-secondary);
+        font-weight: 400;
+    }
+
+    /* Dashboard Cards - Matching Student Dashboard */
+    .dashboard-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-md);
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .dashboard-card:hover {
+        box-shadow: var(--shadow-lg);
+        transform: translateY(-2px);
+    }
+
+    .dashboard-card-header {
+        padding: 16px 24px;
+        background: linear-gradient(135deg, var(--bg-input) 0%, transparent 100%);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .dashboard-card-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-icon {
+        color: var(--primary-light);
+        font-size: 18px;
+    }
+
+    .dashboard-card-tools {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-tool {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 14px;
+    }
+
+    .btn-tool:hover {
+        background: var(--bg-hover);
+        color: var(--primary-light);
+        transform: scale(1.05);
+    }
+
+    .dashboard-card-body {
+        padding: 24px;
+        background: var(--bg-card);
+    }
+
+    /* Form Styling - Fixed textarea visibility */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        font-size: 14px;
+        color: var(--text-secondary);
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    .form-group label.required::after {
+        content: '*';
+        color: var(--danger);
+        margin-left: 4px;
+    }
+
+    .form-control {
+        border: 2px solid var(--border-color);
+        border-radius: 10px;
+        padding: 12px 16px;
+        font-size: 14px;
+        width: 100%;
+        transition: all 0.3s ease;
+        /* Fixed text color for better visibility */
+        color: var(--text-primary) !important;
+        background: var(--bg-input) !important;
+        font-family: inherit;
+    }
+
+    /* Ensure textarea specifically has correct colors */
+    textarea.form-control {
+        color: var(--text-primary) !important;
+        background: var(--bg-input) !important;
+        min-height: 120px;
+        resize: vertical;
+        line-height: 1.5;
+    }
+
+    /* Placeholder styling */
+    .form-control::placeholder {
+        color: var(--text-muted);
+        font-weight: 300;
+        opacity: 0.7;
+    }
+
+    /* Focus state */
+    .form-control:focus {
+        border-color: var(--primary-color);
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+        background: var(--bg-card) !important;
+        color: var(--text-primary) !important;
+    }
+
+    /* Select dropdown styling */
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23b8b8d4'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 40px;
+        color: var(--text-primary) !important;
+        background-color: var(--bg-input) !important;
+    }
+
+    select.form-control option {
+        background: var(--bg-card);
+        color: var(--text-primary);
+        padding: 10px;
+    }
+
+    /* Input specific styling */
+    input.form-control {
+        color: var(--text-primary) !important;
+        background: var(--bg-input) !important;
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        border: none;
+        padding: 12px 28px;
+        font-size: 14px;
+        font-weight: 500;
+        border-radius: 10px;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-primary i {
+        font-size: 14px;
+        transition: transform 0.3s ease;
+    }
+
+    .btn-primary:hover i {
+        transform: translateX(5px);
+    }
+
+    /* Table Styling */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, var(--bg-input) 0%, transparent 100%);
+        padding: 16px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+        border-bottom: 2px solid var(--border-color);
+        white-space: nowrap;
+        text-align: left;
+    }
+
+    .table tbody td {
+        padding: 16px 20px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
+        background: transparent;
+        transition: background 0.3s ease;
+    }
+
+    .table tbody tr:hover td {
+        background: var(--bg-hover);
+        color: var(--text-primary);
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .text-muted {
+        color: var(--text-muted) !important;
+        font-weight: 500;
+    }
+
+    .message-cell {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Badge Styling */
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 500;
+        border-radius: 20px;
+        text-align: center;
+        white-space: nowrap;
+        min-width: 90px;
+    }
+
+    .badge i {
+        font-size: 11px;
+    }
+
+    .badge-pending {
+        background: rgba(253, 203, 110, 0.1);
+        color: var(--warning);
+        border: 1px solid rgba(253, 203, 110, 0.2);
+    }
+
+    .badge-approved {
+        background: rgba(0, 184, 148, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(0, 184, 148, 0.2);
+    }
+
+    .badge-rejected {
+        background: rgba(214, 48, 49, 0.1);
+        color: var(--danger);
+        border: 1px solid rgba(214, 48, 49, 0.2);
+    }
+
+    /* Action Buttons */
+    .action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-input);
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .cancel-btn:hover {
+        background: rgba(214, 48, 49, 0.1);
+        color: var(--danger);
+        border-color: var(--danger);
+    }
+
+    .view-btn:hover {
+        background: rgba(108, 92, 231, 0.1);
+        color: var(--primary-light);
+        border-color: var(--primary-color);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px !important;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+        color: var(--border-color);
+        margin-bottom: 16px;
+    }
+
+    .empty-state p {
+        color: var(--text-secondary);
+        font-size: 16px;
+        margin-bottom: 8px;
+    }
+
+    .empty-hint {
+        color: var(--text-muted);
+        font-size: 13px;
+        display: block;
+    }
+
+    /* Alert Messages */
+    .alert {
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        animation: slideIn 0.3s ease;
+    }
+
+    .alert-success {
+        background: rgba(0, 184, 148, 0.1);
+        border: 1px solid rgba(0, 184, 148, 0.3);
+        color: var(--success);
+    }
+
+    .alert-error {
+        background: rgba(214, 48, 49, 0.1);
+        border: 1px solid rgba(214, 48, 49, 0.3);
+        color: var(--danger);
+    }
+
+    .alert-warning {
+        background: rgba(253, 203, 110, 0.1);
+        border: 1px solid rgba(253, 203, 110, 0.3);
+        color: var(--warning);
+    }
+
+    .alert-info {
+        background: rgba(108, 92, 231, 0.1);
+        border: 1px solid rgba(108, 92, 231, 0.3);
+        color: var(--primary-light);
+    }
+
+    .alert i {
+        font-size: 18px;
+    }
+
+    /* Animation */
+    @keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .dashboard-card {
+        animation: slideIn 0.4s ease forwards;
+    }
+
+    .dashboard-card:first-child {
+        animation-delay: 0.1s;
+    }
+
+    .dashboard-card:last-child {
+        animation-delay: 0.2s;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .page-header {
+            padding: 20px 0;
+        }
+        
+        .page-header h2 {
+            font-size: 24px;
+        }
+        
+        .page-header p {
+            font-size: 14px;
+        }
+        
+        .dashboard-card-header {
+            padding: 14px 20px;
+        }
+        
+        .dashboard-card-title {
+            font-size: 16px;
+        }
+        
+        .dashboard-card-body {
+            padding: 20px;
+        }
+        
+        .table thead th {
+            padding: 12px 15px;
+            font-size: 12px;
+        }
+        
+        .table tbody td {
+            padding: 12px 15px;
+            font-size: 13px;
+        }
+        
+        .badge {
+            min-width: 80px;
+            padding: 4px 8px;
+            font-size: 11px;
+        }
+        
+        .message-cell {
+            max-width: 150px;
+        }
+        
+        .btn-primary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    /* Small mobile devices */
+    @media (max-width: 480px) {
+        .table thead th {
+            padding: 10px 12px;
+            font-size: 11px;
+        }
+        
+        .table tbody td {
+            padding: 10px 12px;
+            font-size: 12px;
+        }
+        
+        .badge {
+            min-width: 70px;
+            padding: 3px 6px;
+            font-size: 10px;
+        }
+        
+        .action-btn {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .message-cell {
+            max-width: 100px;
+        }
+    }
+
+    /* Print styles */
+    @media print {
+        .btn-tool,
+        .btn-primary,
+        .action-btn {
+            display: none !important;
+        }
+        
+        .dashboard-card {
+            box-shadow: none;
+            border: 1px solid #000;
+        }
+        
+        .badge {
+            border: 1px solid #000;
+            color: #000;
+            background: none;
+        }
+    }
+
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: var(--bg-card);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: var(--primary-color);
+        border-radius: 10px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--primary-light);
+    }
+</style>
+{% endblock content %}

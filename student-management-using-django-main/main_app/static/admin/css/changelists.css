@@ -1,0 +1,779 @@
+/* CHANGELISTS - Dark Theme */
+:root {
+    --primary-color: #6c5ce7;
+    --primary-dark: #5649c0;
+    --primary-light: #8a7cf0;
+    --secondary-color: #00cec9;
+    --accent-color: #fd79a8;
+    --bg-dark: #0f0f1a;
+    --bg-card: #1a1a2e;
+    --bg-input: #25253a;
+    --bg-hover: rgba(108, 92, 231, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8d4;
+    --text-muted: #6c6c8c;
+    --border-color: #2d2d44;
+    --success: #00b894;
+    --warning: #fdcb6e;
+    --danger: #d63031;
+    --info: #0984e3;
+    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+#changelist {
+    position: relative;
+    width: 100%;
+    background: var(--bg-dark);
+}
+
+#changelist table {
+    width: 100%;
+    background: var(--bg-card);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+}
+
+.change-list .hiddenfields { 
+    display: none; 
+}
+
+.change-list .filtered table {
+    border-right: none;
+    border-radius: 15px 0 0 15px;
+}
+
+.change-list .filtered {
+    min-height: 400px;
+    background: var(--bg-dark);
+}
+
+.change-list .filtered .results, 
+.change-list .filtered .paginator,
+.filtered #toolbar, 
+.filtered div.xfull {
+    margin-right: 280px;
+    width: auto;
+}
+
+.change-list .filtered table tbody th {
+    padding-right: 1em;
+}
+
+#changelist-form .results {
+    overflow-x: auto;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+#changelist .toplinks {
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+    margin-bottom: 15px;
+}
+
+#changelist .paginator {
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+    overflow: hidden;
+    padding: 12px 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+    font-size: 13px;
+}
+
+/* CHANGELIST TABLES */
+#changelist table thead th {
+    padding: 0;
+    white-space: nowrap;
+    vertical-align: middle;
+    background: linear-gradient(135deg, var(--bg-input) 0%, var(--bg-card) 100%);
+    color: var(--text-primary);
+    font-weight: 500;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+#changelist table thead th a:link,
+#changelist table thead th a:visited {
+    color: var(--text-primary);
+    display: block;
+    padding: 15px 10px;
+}
+
+#changelist table thead th a:hover {
+    color: var(--primary-light);
+    text-decoration: none;
+}
+
+#changelist table thead th.action-checkbox-column {
+    width: 1.5em;
+    text-align: center;
+    padding: 15px 5px;
+}
+
+#changelist table thead th.action-checkbox-column .text {
+    display: none;
+}
+
+#changelist table tbody td {
+    padding: 12px 10px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+}
+
+#changelist table tbody td.action-checkbox {
+    text-align: center;
+    width: 30px;
+}
+
+#changelist table tbody tr:hover td {
+    background: var(--bg-hover);
+}
+
+#changelist table tbody tr.selected {
+    background: rgba(108, 92, 231, 0.15);
+    position: relative;
+}
+
+#changelist table tbody tr.selected td {
+    background: transparent;
+    color: var(--text-primary);
+}
+
+#changelist table tbody tr.selected:hover td {
+    background: rgba(108, 92, 231, 0.2);
+}
+
+#changelist table tfoot {
+    color: var(--text-secondary);
+    background: linear-gradient(135deg, var(--bg-input) 0%, var(--bg-card) 100%);
+}
+
+#changelist table tfoot td {
+    padding: 12px 10px;
+    border-top: 2px solid var(--border-color);
+}
+
+/* TOOLBAR */
+#changelist #toolbar {
+    padding: 15px 20px;
+    margin-bottom: 25px;
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+}
+
+#changelist #toolbar form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+#changelist #toolbar form label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+#changelist #toolbar form input {
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 10px 12px;
+    color: var(--text-primary);
+    background: var(--bg-input);
+    border: 2px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+#changelist #toolbar form input:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+    background: var(--bg-card);
+}
+
+#changelist #toolbar form #searchbar {
+    height: 40px;
+    border: 2px solid var(--border-color);
+    padding: 8px 12px;
+    margin: 0;
+    vertical-align: top;
+    font-size: 14px;
+    max-width: 300px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border-radius: 10px;
+    flex: 1;
+}
+
+#changelist #toolbar form #searchbar:focus {
+    border-color: var(--primary-color);
+}
+
+#changelist #toolbar form input[type="submit"] {
+    border: none;
+    font-size: 14px;
+    padding: 10px 24px;
+    margin: 0;
+    vertical-align: middle;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-primary);
+    cursor: pointer;
+    border-radius: 10px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+#changelist #toolbar form input[type="submit"]:focus,
+#changelist #toolbar form input[type="submit"]:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+}
+
+#changelist #changelist-search img {
+    vertical-align: middle;
+    margin-right: 8px;
+    filter: invert(0.6);
+    width: 18px;
+    height: 18px;
+}
+
+/* FILTER COLUMN */
+#changelist-filter {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    width: 260px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+    border-left: 1px solid var(--border-color);
+    border-radius: 15px 0 0 15px;
+    margin: 0;
+    padding: 20px 0;
+    box-shadow: var(--shadow-lg);
+    animation: slideInRight 0.3s ease;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+#changelist-filter h2 {
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0 20px 15px 20px;
+    margin: 0 0 15px 0;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-primary);
+    background: transparent;
+}
+
+#changelist-filter h3 {
+    font-weight: 500;
+    font-size: 14px;
+    padding: 0 20px;
+    margin: 20px 0 10px 0;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+#changelist-filter ul {
+    margin: 0 0 20px 0;
+    padding: 0 20px 15px;
+    border-bottom: 1px solid var(--border-color);
+    list-style: none;
+}
+
+#changelist-filter ul:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+#changelist-filter li {
+    list-style-type: none;
+    margin: 0 0 8px 0;
+    padding: 0;
+    font-size: 13px;
+}
+
+#changelist-filter a {
+    display: block;
+    color: var(--text-secondary);
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+#changelist-filter a:hover {
+    background: var(--bg-hover);
+    color: var(--primary-light);
+    transform: translateX(5px);
+}
+
+#changelist-filter li.selected {
+    border-left: 3px solid var(--primary-color);
+    padding-left: 12px;
+    margin-left: -3px;
+}
+
+#changelist-filter li.selected a {
+    color: var(--primary-light);
+    font-weight: 500;
+    background: rgba(108, 92, 231, 0.1);
+}
+
+#changelist-filter li.selected a:hover {
+    color: var(--primary-color);
+    background: rgba(108, 92, 231, 0.15);
+}
+
+#changelist-filter #changelist-filter-clear a {
+    font-size: 13px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 10px;
+    color: var(--warning);
+    font-weight: 500;
+}
+
+#changelist-filter #changelist-filter-clear a:hover {
+    color: var(--warning);
+    background: rgba(253, 203, 110, 0.1);
+}
+
+/* DATE DRILLDOWN */
+.change-list ul.toplinks {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 0;
+    margin: 0 0 20px 0;
+    width: 100%;
+    list-style: none;
+}
+
+.change-list ul.toplinks li {
+    padding: 0;
+    font-weight: 500;
+    list-style-type: none;
+    display: inline-block;
+}
+
+.change-list ul.toplinks li a {
+    display: block;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    color: var(--text-secondary);
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.change-list ul.toplinks li a:hover {
+    background: var(--bg-hover);
+    color: var(--primary-light);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+    border-color: var(--primary-color);
+}
+
+.change-list ul.toplinks .date-back a {
+    color: var(--text-secondary);
+}
+
+.change-list ul.toplinks .date-back a:focus,
+.change-list ul.toplinks .date-back a:hover {
+    color: var(--primary-light);
+}
+
+/* PAGINATOR */
+.paginator {
+    font-size: 13px;
+    padding: 15px 20px;
+    line-height: 1.5;
+    margin: 20px 0 0;
+    border-top: 1px solid var(--border-color);
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    color: var(--text-secondary);
+}
+
+.paginator a:link, 
+.paginator a:visited {
+    padding: 8px 14px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    text-decoration: none;
+    color: var(--text-primary);
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.paginator a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+    color: var(--text-primary);
+}
+
+.paginator a.showall {
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--text-secondary);
+}
+
+.paginator a.showall:focus, 
+.paginator a.showall:hover {
+    background: var(--bg-hover);
+    color: var(--primary-light);
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.paginator .end {
+    margin-right: 10px;
+    color: var(--text-muted);
+}
+
+.paginator .this-page {
+    padding: 8px 14px;
+    font-weight: 600;
+    font-size: 13px;
+    vertical-align: top;
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    display: inline-block;
+}
+
+/* ACTIONS */
+.filtered .actions {
+    margin-right: 280px;
+    border-right: none;
+}
+
+#changelist table input[type="checkbox"] {
+    margin: 0;
+    vertical-align: middle;
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: var(--primary-color);
+}
+
+#changelist table tbody tr.selected {
+    background-color: rgba(108, 92, 231, 0.15);
+}
+
+#changelist .actions {
+    padding: 15px 20px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    line-height: 24px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+#changelist .actions.selected {
+    background: rgba(108, 92, 231, 0.15);
+    border-color: var(--primary-color);
+}
+
+#changelist .actions span.all,
+#changelist .actions span.action-counter,
+#changelist .actions span.clear,
+#changelist .actions span.question {
+    font-size: 13px;
+    margin: 0 5px;
+    color: var(--text-secondary);
+}
+
+#changelist .actions span.all a,
+#changelist .actions span.clear a {
+    color: var(--primary-light);
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+#changelist .actions span.all a:hover,
+#changelist .actions span.clear a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+#changelist .actions select {
+    vertical-align: middle;
+    height: 40px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 14px;
+    padding: 0 10px 0 12px;
+    margin: 0;
+    min-width: 200px;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236c6c8c'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+}
+
+#changelist .actions select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+#changelist .actions select option {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    padding: 10px;
+}
+
+#changelist .actions select option:hover {
+    background: var(--primary-color);
+}
+
+#changelist .actions label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    vertical-align: middle;
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+#changelist .actions .button {
+    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: var(--text-primary);
+    cursor: pointer;
+    height: 40px;
+    line-height: 1;
+    padding: 0 24px;
+    margin: 0;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+#changelist .actions .button:focus, 
+#changelist .actions .button:hover {
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(108, 92, 231, 0.3);
+}
+
+/* Action counter badges */
+.action-counter {
+    background: var(--bg-input);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+    .change-list .filtered .results, 
+    .change-list .filtered .paginator,
+    .filtered #toolbar, 
+    .filtered div.xfull {
+        margin-right: 0;
+    }
+    
+    #changelist-filter {
+        position: static;
+        width: 100%;
+        margin-top: 20px;
+        border-left: none;
+        border-radius: 15px;
+    }
+    
+    .filtered .actions {
+        margin-right: 0;
+    }
+    
+    #changelist #toolbar form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #changelist #toolbar form #searchbar {
+        max-width: 100%;
+    }
+    
+    #changelist .actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    #changelist .actions select {
+        width: 100%;
+    }
+    
+    .paginator {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+}
+
+/* Print styles */
+@media print {
+    #changelist-filter,
+    #toolbar,
+    .actions,
+    .paginator {
+        display: none !important;
+    }
+    
+    #changelist table {
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
+
+/* Animation for row selection */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(108, 92, 231, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(108, 92, 231, 0);
+    }
+}
+
+tr.selected td:first-child {
+    animation: pulse 1s ease;
+}
+
+/* Custom checkbox styling */
+input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+input[type="checkbox"]:checked {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input[type="checkbox"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15);
+}
+
+input[type="checkbox"]:hover {
+    border-color: var(--primary-light);
+}
+
+/* Action links */
+.actions span a {
+    color: var(--primary-light);
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.actions span a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Clear filters link */
+#changelist-filter-clear {
+    margin-bottom: 15px;
+}
+
+#changelist-filter-clear a {
+    color: var(--warning) !important;
+    font-weight: 500;
+}
+
+/* Date hierarchy */
+.date-hierarchy {
+    margin-bottom: 20px;
+    padding: 10px 15px;
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-input) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+}
+
+.date-hierarchy a {
+    color: var(--primary-light);
+    text-decoration: none;
+    margin: 0 5px;
+}
+
+.date-hierarchy a:hover {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+.date-hierarchy .date-back {
+    margin-right: 10px;
+}

@@ -1,0 +1,311 @@
+{% extends 'main_app/base.html' %}
+{% load static %}
+{% block page_title %}{{page_title}}{% endblock page_title %}
+
+{% block content %}
+<section class="content">
+    <div class="container-fluid">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="page-header">
+                    <h2>Student Results</h2>
+                    <p>View your academic performance</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+                <!-- Results Card -->
+                <div class="dashboard-card">
+                    <div class="dashboard-card-header">
+                        <h3 class="dashboard-card-title">
+                            <i class="fas fa-chart-line card-icon"></i>
+                            {{page_title}}
+                        </h3>
+                        <div class="dashboard-card-tools">
+                            <button type="button" class="btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            <button type="button" class="btn-tool" data-card-widget="remove">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Subject</th>
+                                        <th>Test</th>
+                                        <th>Exam</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for result in results %}
+                                    <tr>
+                                        <td class="text-muted">{{forloop.counter|stringformat:"02d"}}</td>
+                                        <td class="subject-cell">{{ result.subject }}</td>
+                                        <td>
+                                            <span class="score-badge test-score">{{ result.test }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="score-badge exam-score">{{ result.exam }}</span>
+                                        </td>
+                                        <td>
+                                            <span class="score-badge total-score">{{ result.test|add:result.exam }}</span>
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="5" class="empty-state">
+                                            <i class="fas fa-chart-line empty-icon"></i>
+                                            <p>No results found</p>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Dark Theme Variables */
+    :root {
+        --primary-color: #6c5ce7;
+        --primary-dark: #5649c0;
+        --primary-light: #8a7cf0;
+        --secondary-color: #00cec9;
+        --bg-dark: #0f0f1a;
+        --bg-card: #1a1a2e;
+        --bg-input: #25253a;
+        --bg-hover: rgba(108, 92, 231, 0.1);
+        --text-primary: #ffffff;
+        --text-secondary: #b8b8d4;
+        --text-muted: #6c6c8c;
+        --border-color: #2d2d44;
+        --success: #00b894;
+        --warning: #fdcb6e;
+        --danger: #d63031;
+        --info: #0984e3;
+        --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Page Header */
+    .page-header {
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border-color);
+        margin-bottom: 24px;
+    }
+
+    .page-header h2 {
+        font-size: 28px;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin: 0 0 8px 0;
+        letter-spacing: -0.3px;
+    }
+
+    .page-header p {
+        margin: 0;
+        font-size: 15px;
+        color: var(--text-secondary);
+    }
+
+    /* Dashboard Card */
+    .dashboard-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        margin-bottom: 24px;
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+
+    .dashboard-card-header {
+        padding: 16px 24px;
+        background: linear-gradient(135deg, var(--bg-input) 0%, transparent 100%);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .dashboard-card-title {
+        font-size: 18px;
+        font-weight: 500;
+        color: var(--text-primary);
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .card-icon {
+        color: var(--primary-light);
+        font-size: 18px;
+    }
+
+    .dashboard-card-tools {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-tool {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-tool:hover {
+        background: var(--bg-hover);
+        color: var(--primary-light);
+    }
+
+    .dashboard-card-body {
+        padding: 24px;
+        background: var(--bg-card);
+    }
+
+    /* Table Styling */
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .table thead th {
+        background: linear-gradient(135deg, var(--bg-input) 0%, transparent 100%);
+        padding: 16px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-secondary);
+        border-bottom: 2px solid var(--border-color);
+        text-align: left;
+    }
+
+    .table tbody td {
+        padding: 16px 20px;
+        font-size: 14px;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border-color);
+        vertical-align: middle;
+    }
+
+    .table tbody tr:hover td {
+        background: var(--bg-hover);
+    }
+
+    .table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .text-muted {
+        color: var(--text-muted) !important;
+        font-weight: 500;
+    }
+
+    .subject-cell {
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    /* Score Badges */
+    .score-badge {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        min-width: 60px;
+        text-align: center;
+    }
+
+    .test-score {
+        background: rgba(9, 132, 227, 0.1);
+        color: var(--info);
+        border: 1px solid rgba(9, 132, 227, 0.2);
+    }
+
+    .exam-score {
+        background: rgba(108, 92, 231, 0.1);
+        color: var(--primary-light);
+        border: 1px solid rgba(108, 92, 231, 0.2);
+    }
+
+    .total-score {
+        background: rgba(0, 184, 148, 0.1);
+        color: var(--success);
+        border: 1px solid rgba(0, 184, 148, 0.2);
+        font-weight: 600;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px !important;
+    }
+
+    .empty-icon {
+        font-size: 48px;
+        color: var(--border-color);
+        margin-bottom: 16px;
+    }
+
+    .empty-state p {
+        color: var(--text-muted);
+        font-size: 16px;
+        margin: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .page-header h2 {
+            font-size: 24px;
+        }
+        
+        .dashboard-card-header {
+            padding: 14px 20px;
+        }
+        
+        .dashboard-card-body {
+            padding: 20px;
+        }
+        
+        .table thead th {
+            padding: 12px 15px;
+            font-size: 12px;
+        }
+        
+        .table tbody td {
+            padding: 12px 15px;
+            font-size: 13px;
+        }
+        
+        .score-badge {
+            padding: 4px 8px;
+            font-size: 12px;
+            min-width: 50px;
+        }
+    }
+</style>
+{% endblock content %}
