@@ -12,8 +12,7 @@
     <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
     <!-- Google Font: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Google Recaptcha -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     
     <style>
         /* Dark Theme Variables */
@@ -414,17 +413,6 @@
             transform: translateX(5px);
         }
 
-        /* Recaptcha */
-        .recaptcha-wrapper {
-            background: var(--bg-input);
-            border-radius: 15px;
-            padding: 15px;
-            margin: 20px 0;
-            display: flex;
-            justify-content: center;
-            border: 1px solid var(--border-color);
-        }
-
         /* Forgot Password */
         .forgot-password {
             text-align: center;
@@ -569,11 +557,6 @@
                 padding: 12px 12px 12px 40px;
             }
 
-            .recaptcha-wrapper {
-                padding: 10px;
-                margin: 15px 0;
-            }
-
             .checkbox-wrapper {
                 margin: 15px 0;
             }
@@ -673,11 +656,6 @@
                             <input required type="password" name="password" class="form-control" 
                                    placeholder="Password" autocomplete="current-password">
                         </div>
-                    </div>
-
-                    <!-- Recaptcha -->
-                    <div class="recaptcha-wrapper">
-                        <div class="g-recaptcha" data-sitekey="6LfswtgZAAAAAJ7bhwqZZtDpBsc75ekH6FWA4Fnt"></div>
                     </div>
 
                     <div class="checkbox-wrapper">
