@@ -28,8 +28,7 @@ SECRET_KEY = 'django-insecure-7x@9$k@random@123456789@local@key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['smswithdjango.herokuapp.com']
-ALLOWED_HOSTS = ['college-management-a29g.onrender.com']
+ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
