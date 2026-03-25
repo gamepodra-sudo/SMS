@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-7x@9$k@random@123456789@local@key'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['https://college-management-a29g.onrender.com/']
 # Application definition
 
 INSTALLED_APPS = [
