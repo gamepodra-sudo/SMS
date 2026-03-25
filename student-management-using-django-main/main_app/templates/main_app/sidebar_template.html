@@ -365,6 +365,17 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    {% url 'student_attendance_percentage' as student_attendance_percentage %}
+                    <a href="{{student_attendance_percentage}}" class="nav-link {% if student_attendance_percentage == request.path %} active {% endif %}">
+                        <i class="nav-icon fas fa-percentage"></i>
+                        <p>Attendance %</p>
+                        {% if is_below_75 %}
+                        <span class="badge badge-danger" style="background: #d63031; color: white; padding: 3px 8px; border-radius: 10px; font-size: 10px; margin-left: 5px;">Low</span>
+                        {% endif %}
+                    </a>
+                </li>
+
                 <li class="nav-header">COMMUNICATION</li>
                 <li class="nav-item">
                     {% url 'student_view_notification' as student_view_notification %}

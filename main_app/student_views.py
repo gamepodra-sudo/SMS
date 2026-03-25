@@ -19,11 +19,12 @@ def student_home(request):
     total_subject = Subject.objects.filter(course=student.course).count()
     total_attendance = AttendanceReport.objects.filter(student=student).count()
     total_present = AttendanceReport.objects.filter(student=student, status=True).count()
-    if total_attendance == 0:  # Don't divide. DivisionByZero
+    if total_attendance == 0:
         percent_absent = percent_present = 0
     else:
         percent_present = math.floor((total_present/total_attendance) * 100)
         percent_absent = math.ceil(100 - percent_present)
+    is_below_75 = percent_present < 75 and total_attendance > 0
     subject_name = []
     data_present = []
     data_absent = []
@@ -46,10 +47,59 @@ def student_home(request):
         'data_present': data_present,
         'data_absent': data_absent,
         'data_name': subject_name,
-        'page_title': 'Student Homepage'
+        'page_title': 'Student Homepage',
+        'is_below_75': is_below_75
 
     }
     return render(request, 'student_template/home_content.html', context)
+
+
+def student_view_attendance_percentage(request):
+    student = get_object_or_404(Student, admin=request.user)
+    
+    total_attendance = AttendanceReport.objects.filter(student=student).count()
+    total_present = AttendanceReport.objects.filter(student=student, status=True).count()
+    
+    if total_attendance == 0:
+        overall_percentage = 0
+        is_below_75 = False
+    else:
+        overall_percentage = round((total_present / total_attendance) * 100, 1)
+        is_below_75 = overall_percentage < 75
+    
+    subjects = Subject.objects.filter(course=student.course)
+    subject_stats = []
+    
+    for subject in subjects:
+        attendance = Attendance.objects.filter(subject=subject)
+        present_count = AttendanceReport.objects.filter(
+            attendance__in=attendance, status=True, student=student).count()
+        total_for_subject = attendance.count()
+        
+        if total_for_subject > 0:
+            subject_percentage = round((present_count / total_for_subject) * 100, 1)
+        else:
+            subject_percentage = 0
+        
+        subject_stats.append({
+            'subject': subject,
+            'present': present_count,
+            'total': total_for_subject,
+            'percentage': subject_percentage,
+            'is_below_75': subject_percentage < 75 and total_for_subject > 0
+        })
+    
+    context = {
+        'student': student,
+        'total_attendance': total_attendance,
+        'total_present': total_present,
+        'total_absent': total_attendance - total_present,
+        'overall_percentage': overall_percentage,
+        'is_below_75': is_below_75,
+        'subject_stats': subject_stats,
+        'page_title': 'Attendance Percentage'
+    }
+    return render(request, 'student_template/student_attendance_percentage.html', context)
 
 
 @ csrf_exempt
@@ -144,31 +194,25 @@ def student_view_profile(request):
                }
     if request.method == 'POST':
         try:
-            if form.is_valid():
-                first_name = form.cleaned_data.get('first_name')
-                last_name = form.cleaned_data.get('last_name')
-                password = form.cleaned_data.get('password') or None
-                address = form.cleaned_data.get('address')
-                gender = form.cleaned_data.get('gender')
-                passport = request.FILES.get('profile_pic') or None
-                admin = student.admin
-                if password != None:
-                    admin.set_password(password)
-                if passport != None:
-                    fs = FileSystemStorage()
-                    filename = fs.save(passport.name, passport)
-                    passport_url = fs.url(filename)
-                    admin.profile_pic = passport_url
-                admin.first_name = first_name
-                admin.last_name = last_name
-                admin.address = address
-                admin.gender = gender
-                admin.save()
-                student.save()
-                messages.success(request, "Profile Updated!")
-                return redirect(reverse('student_view_profile'))
-            else:
-                messages.error(request, "Invalid Data Provided")
+            admin = student.admin
+            admin.first_name = request.POST.get('first_name')
+            admin.last_name = request.POST.get('last_name')
+            admin.gender = request.POST.get('gender')
+            admin.address = request.POST.get('address') or ''
+            
+            password = request.POST.get('password')
+            if password:
+                admin.set_password(password)
+            
+            if 'profile_pic' in request.FILES:
+                fs = FileSystemStorage()
+                passport = request.FILES['profile_pic']
+                filename = fs.save(passport.name, passport)
+                admin.profile_pic = fs.url(filename)
+            
+            admin.save()
+            messages.success(request, "Profile Updated!")
+            return redirect(reverse('student_view_profile'))
         except Exception as e:
             messages.error(request, "Error Occured While Updating Profile " + str(e))
 

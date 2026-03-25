@@ -111,8 +111,8 @@ class SessionForm(FormSettings):
         model = Session
         fields = '__all__'
         widgets = {
-            'start_year': DateInput(attrs={'type': 'date'}),
-            'end_year': DateInput(attrs={'type': 'date'}),
+            'start_year': DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'end_year': DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
 
@@ -124,7 +124,7 @@ class LeaveReportStaffForm(FormSettings):
         model = LeaveReportStaff
         fields = ['date', 'message']
         widgets = {
-            'date': DateInput(attrs={'type': 'date'}),
+            'date': DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
 
@@ -146,7 +146,7 @@ class LeaveReportStudentForm(FormSettings):
         model = LeaveReportStudent
         fields = ['date', 'message']
         widgets = {
-            'date': DateInput(attrs={'type': 'date'}),
+            'date': DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
 
@@ -163,19 +163,43 @@ class FeedbackStudentForm(FormSettings):
 class StudentEditForm(CustomUserForm):
     def __init__(self, *args, **kwargs):
         super(StudentEditForm, self).__init__(*args, **kwargs)
+        self.fields['profile_pic'].required = False
+        self.fields['password'].required = False
+        self.fields['address'].required = False
+        
+        if kwargs.get('instance'):
+            admin_instance = kwargs.get('instance').admin
+            self.fields['first_name'].initial = admin_instance.first_name
+            self.fields['last_name'].initial = admin_instance.last_name
+            self.fields['email'].initial = admin_instance.email
+            self.fields['gender'].initial = admin_instance.gender
+            self.fields['address'].initial = admin_instance.address
+            self.fields['profile_pic'].initial = admin_instance.profile_pic
 
     class Meta(CustomUserForm.Meta):
         model = Student
-        fields = CustomUserForm.Meta.fields 
+        fields = ['first_name', 'last_name', 'email', 'gender', 'address', 'profile_pic']
 
 
 class StaffEditForm(CustomUserForm):
     def __init__(self, *args, **kwargs):
         super(StaffEditForm, self).__init__(*args, **kwargs)
+        self.fields['profile_pic'].required = False
+        self.fields['password'].required = False
+        self.fields['address'].required = False
+        
+        if kwargs.get('instance'):
+            admin_instance = kwargs.get('instance').admin
+            self.fields['first_name'].initial = admin_instance.first_name
+            self.fields['last_name'].initial = admin_instance.last_name
+            self.fields['email'].initial = admin_instance.email
+            self.fields['gender'].initial = admin_instance.gender
+            self.fields['address'].initial = admin_instance.address
+            self.fields['profile_pic'].initial = admin_instance.profile_pic
 
     class Meta(CustomUserForm.Meta):
         model = Staff
-        fields = CustomUserForm.Meta.fields
+        fields = ['first_name', 'last_name', 'email', 'gender', 'address', 'profile_pic']
 
 
 class EditResultForm(FormSettings):

@@ -5,6 +5,27 @@
 {% block content %}
 <section class="content">
     <div class="container-fluid">
+        <!-- Low Attendance Alert -->
+        {% if is_below_75 %}
+        <div class="attendance-alert" id="attendanceAlert">
+            <div class="alert-content">
+                <div class="alert-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="alert-text">
+                    <h4>Attendance Alert!</h4>
+                    <p>Your attendance is <strong class="percentage">{{percent_present}}%</strong>. You need 75% to be eligible for exams.</p>
+                </div>
+                <a href="{% url 'student_attendance_percentage' %}" class="alert-btn">
+                    View Details <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <button class="alert-close" onclick="closeAttendanceAlert()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        {% endif %}
+
         <!-- Page Header -->
         <div class="row mb-4">
             <div class="col-12">
@@ -506,6 +527,152 @@
     ::-webkit-scrollbar-thumb:hover {
         background: var(--primary-light);
     }
+
+    /* Attendance Alert */
+    .attendance-alert {
+        position: fixed;
+        top: 80px;
+        right: 20px;
+        background: linear-gradient(135deg, #d63031 0%, #e17055 100%);
+        border-radius: 16px;
+        padding: 0;
+        box-shadow: 0 10px 40px rgba(214, 48, 49, 0.4);
+        z-index: 9999;
+        max-width: 400px;
+        animation: slideInRight 0.5s ease, pulse 2s infinite;
+        overflow: hidden;
+    }
+
+    .attendance-alert .alert-content {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        gap: 15px;
+    }
+
+    .attendance-alert .alert-icon {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        animation: shake 0.5s ease-in-out;
+    }
+
+    .attendance-alert .alert-text {
+        flex: 1;
+        color: white;
+    }
+
+    .attendance-alert .alert-text h4 {
+        margin: 0 0 5px 0;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .attendance-alert .alert-text p {
+        margin: 0;
+        font-size: 13px;
+        opacity: 0.9;
+    }
+
+    .attendance-alert .alert-text .percentage {
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .attendance-alert .alert-btn {
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .attendance-alert .alert-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateX(3px);
+    }
+
+    .attendance-alert .alert-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.2);
+        border: none;
+        color: white;
+        width: 25px;
+        height: 25px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .attendance-alert .alert-close:hover {
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 10px 40px rgba(214, 48, 49, 0.4);
+        }
+        50% {
+            box-shadow: 0 10px 50px rgba(214, 48, 49, 0.6);
+        }
+    }
+
+    @keyframes shake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-5deg); }
+        75% { transform: rotate(5deg); }
+    }
+
+    @media (max-width: 768px) {
+        .attendance-alert {
+            top: auto;
+            bottom: 20px;
+            right: 10px;
+            left: 10px;
+            max-width: none;
+        }
+
+        .attendance-alert .alert-content {
+            flex-wrap: wrap;
+        }
+
+        .attendance-alert .alert-btn {
+            width: 100%;
+            justify-content: center;
+            margin-top: 10px;
+        }
+    }
 </style>
 
 {% endblock content %}
@@ -727,5 +894,29 @@ function sendToServer(token) {
 if ('Notification' in window) {
     InitializeFireBaseMessaging();
 }
+
+// Close attendance alert
+function closeAttendanceAlert() {
+    var alert = document.getElementById('attendanceAlert');
+    if (alert) {
+        alert.style.animation = 'slideOutRight 0.3s ease forwards';
+        setTimeout(function() {
+            alert.style.display = 'none';
+        }, 300);
+    }
+}
 </script>
+
+<style>
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+</style>
 {% endblock custom_js %}

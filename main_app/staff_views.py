@@ -104,12 +104,43 @@ def save_attendance(request):
 
 
 def staff_update_attendance(request):
-    staff = get_object_or_404(Staff, admin=request.user)
+    try:
+        staff = Staff.objects.get(admin=request.user)
+    except Staff.DoesNotExist:
+        messages.error(request, "Staff profile not found. Please contact administrator.")
+        return redirect('staff_home')
+    
     subjects = Subject.objects.filter(staff_id=staff)
     sessions = Session.objects.all()
+    
+    from datetime import timedelta
+    from django.utils import timezone
+    today = timezone.now().date()
+    week_ago = today - timedelta(days=7)
+    
+    recent_attendance = Attendance.objects.filter(
+        subject__staff=staff,
+        date__gte=week_ago
+    ).order_by('-date')[:20]
+    
+    recent_data = []
+    for att in recent_attendance:
+        attendance_reports = AttendanceReport.objects.filter(attendance=att)
+        present_count = attendance_reports.filter(status=True).count()
+        total_count = attendance_reports.count()
+        recent_data.append({
+            'id': att.id,
+            'date': att.date,
+            'subject': att.subject.name,
+            'session': att.session,
+            'present': present_count,
+            'total': total_count
+        })
+    
     context = {
         'subjects': subjects,
         'sessions': sessions,
+        'recent_attendance': recent_data,
         'page_title': 'Update Attendance'
     }
 

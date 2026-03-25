@@ -5,25 +5,79 @@
 
 <section class="content">
     <div class="container-fluid">
+        {% if recent_attendance %}
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-history"></i> Recent Attendance (Last 7 Days)</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Subject</th>
+                                        <th>Session</th>
+                                        <th>Attendance</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for att in recent_attendance %}
+                                    <tr id="row-{{ att.id }}">
+                                        <td><strong>{{ att.date }}</strong></td>
+                                        <td>{{ att.subject }}</td>
+                                        <td>{{ att.session }}</td>
+                                        <td>
+                                            <span class="badge badge-success">{{ att.present }} Present</span> / 
+                                            <span class="badge badge-danger">{{ att.total|add:"-"|add:att.present }} Absent</span>
+                                        </td>
+                                        <td>
+                                            <div class="progress" style="height: 20px; border-radius: 10px; background: #1a1a2e;">
+                                                {% widthratio att.present att.total 100 as percent %}
+                                                <div class="progress-bar {% if percent >= 75 %}bg-success{% elif percent >= 50 %}bg-warning{% else %}bg-danger{% endif %}" 
+                                                     style="width: {{ percent }}%; border-radius: 10px;">
+                                                    <strong>{{ percent }}%</strong>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary" onclick="editAttendance({{ att.id }})">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <h5><i class="fas fa-info-circle"></i> No Recent Attendance</h5>
+            <p>No attendance records found for the last 7 days. Take attendance using the form below.</p>
+        </div>
+        {% endif %}
+
         <div class="row">
             <div class="col-md-12">
-                <!-- general form elements -->
                 <div class="card card-primary">
                     <div class="card-header">
-                        <h3 class="card-title">{{page_title}}</h3>
+                        <h3 class="card-title">Take / Update Attendance</h3>
                     </div>
 
-                    <!-- /.card-header -->
-                    <!-- form start -->
                     <div class="card-body">
-
-
-
                         <div class="form-group">
                             <label>Subject</label>
                             <select name="subject" class="form-control" id='subject'>
-                                <option value="">----</option>
-                                {% for subject in subjects  %}
+                                <option value="">Select Subject</option>
+                                {% for subject in subjects %}
                                 <option value="{{subject.id}}">{{subject.name}}</option>
                                 {% endfor %}
                             </select>
@@ -31,176 +85,269 @@
                         <div class="form-group">
                             <label>Session</label>
                             <select name="session" class="form-control" id='session'>
-                                <option value="">----</option>
-                                {% for session in sessions  %}
+                                <option value="">Select Session</option>
+                                {% for session in sessions %}
                                 <option value="{{session.id}}">{{session}}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="form-group"><div  style="display: none;" class="alert alert-danger" id='error_attendance'></div>
-                                <div class="alert alert-success" id='success_attendance' style="display: none;"></div>
-                             <button type="button" id='fetch_attendance' class="btn btn-primary btn-block">Fetch
-                                    Attendance</button>
+                        <div class="form-group">
+                            <label>Attendance Date</label>
+                            <input type="date" class="form-control" id='attendance_date' style="background: #020617; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 10px; padding: 10px;">
                         </div>
-                    <!-- /.card-body -->
-                    
-                        
-                               
-                            <div class="form-group" style="display: none;" id="attendance_block">
-                            <div class="form-group">
-                                <label>Attendance Date</label>
-                                <select name="attendance_date" id='attendance_date' class="form-control">
-                               
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                
-                            <div id="fetch_student_block" style="display: none;">
-                                <button type="button" id='fetch_student' class="btn btn-primary btn-block">Fetch Students</button>
-
-                            <!-- <button style="display: none;" type="button" id='save_attendance' class="btn btn-primary btn-block">Save Data</button> -->
-
-                            </div>
-                            <div id='student_data' class="card-footer">
-
-                            </div>
+                        <div class="form-group">
+                            <div class="alert alert-danger" id='error_attendance' style="display: none; border-radius: 10px;"></div>
+                            <div class="alert alert-success" id='success_attendance' style="display: none; border-radius: 10px;"></div>
+                            <button type="button" id='fetch_student' class="btn btn-primary btn-block">
+                                <i class="fas fa-users"></i> Load Students
+                            </button>
                         </div>
-                    </div>  
+                    </div>
+
+                    <div id="student_data" class="card-footer" style="display: none;">
+                    </div>
                 </div>
-                <!-- /.card -->
-
             </div>
         </div>
     </div>
 </section>
-{% endblock content %}
 
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content" style="background: linear-gradient(145deg, #1a1a2e, #0f0f1a); border-radius: 15px;">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-edit"></i> Edit Attendance</h5>
+                <button type="button" class="close" data-dismiss="modal" style="color: white;">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="editModalBody"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" id="saveEditedAttendance" class="btn btn-success">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
 
 {% block custom_js %}
 <script>
     $(document).ready(function () {
-        $("#fetch_attendance").click(function(){
-            var subject = $("#subject").val()
-            var session = $("#session").val()
-            if (session.length < 1 || subject.length < 1){
-                $("#error_attendance").html("Kindly Choose Both Subject and Session")
-                $("#attendance_block").hide()
-                $("#error_attendance").show()
-                return false
-            }
-            $.ajax({
-                url: "{% url 'get_attendance' %}",
-                type: 'POST',
-                data:{
-                    subject:subject,
-                    session:session
-                }
-            
-            }
-
-            ).done(function(response){
-                var json_data = JSON.parse(response)
-                if (json_data.length > 0){
-
-                    var html = "";
-                    for (key in json_data){
-                        html += "<option value='"+json_data[key]['id']+"'>"+json_data[key]['attendance_date']+"</option>"
-                    }
-                    $("#attendance_date").html(html)
-                    $("#error_attendance").hide()
-                    $("#error_attendance").html("")
-                    $("#attendance_block").show()  
-                    $("#fetch_student_block").show()
-                }else{
-                    $("#error_attendance").html("No Attendance Date Found For Specified Data")
-                    $("#error_attendance").show()
-                    $("#attendance_date").html("")
-                    $("#attendance_block").hide()
-
-
-                }
-            }).fail(function(response){
-                alert("Error While Fetching Data")
-                $("#error_attendance").html("")
-                $("#error_attendance").show()
-                $("#attendance_block").hide()
-
-
-            })
-        })
+        var today = new Date().toISOString().split('T')[0];
+        $('#attendance_date').attr('max', today);
 
         $("#fetch_student").click(function () {
-            var attendance_date = $("#attendance_date").val()
-            $("#student_data").html(null)
-if (attendance_date.length  == 0){
-    alert("Please Choose A Date");
-    $("#save_attendance").hide()
-
-    return false;
-}
+            var subject = $("#subject").val();
+            var session = $("#session").val();
+            var date = $("#attendance_date").val();
+            
+            $("#student_data").html("");
+            
+            if (session.length < 1 || subject.length < 1 || date.length < 1) {
+                $("#error_attendance").html("Please Select Subject, Session, and Date");
+                $("#error_attendance").show();
+                return false;
+            }
+            
+            $("#error_attendance").hide();
+            
             $.ajax({
                 url: "{% url 'get_student_attendance' %}",
                 type: 'POST',
                 data: {
-                    attendance_date_id:attendance_date,
+                    attendance_date_id: date,
+                    subject_id: subject,
+                    session_id: session,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
                 }
             }).done(function (response) {
-                var json_data = JSON.parse(response)
+                var json_data = JSON.parse(response);
                 if (json_data.length < 1) {
-                    alert("No data to display")
-            $("#save_attendance").hide()
-
+                    $("#student_data").html("<div class='alert alert-info'>No attendance records found. Taking new attendance...</div>");
+                    $("#student_data").show();
+                    loadStudentsForNewAttendance(subject, session, date);
                 } else {
-            $("#save_attendance").show()
-
-                    var div_data = "<hr/><div class='form-group'></div><div class='form-group'> <label>Student Attendance</label><div class='row'>"
-
-                    for (key in json_data) {
-                        div_data += "<div class='col-lg-3'><div class='form-check custom-control custom-checkbox'><input type='checkbox' class='custom-control-input' " + (json_data[key]['status'] ? "checked='checked'" : "")+" name='student_data[]' value=" + json_data[key]['id'] + " id='checkbox" + json_data[key]['id'] + "' /> <label for='checkbox" + json_data[key]['id'] + "' class='custom-control-label'>" + json_data[key]['name']  + (json_data[key]['status'] ? " [Present] " : " [Absent] ")+"</label></div> </div>"
-                    }
-                    div_data += "</div></div>"
-                    div_data += "<div class='form-group'><button id='save_attendance' class='btn btn-success' type='button'>Save Attendance</button></div>"
-                    $("#student_data").html(div_data)
+                    displayStudentAttendance(json_data);
                 }
             }).fail(function (response) {
-                alert("Error in fetching students")
-            })
+                alert("Error in fetching students");
+            });
+        });
 
-        })
         $(document).on('click', '#save_attendance', function () {
-            //$(this).attr("disabled","disabled")
-            $(this).text("Updating Attendance Data...")
+            $(this).text("Saving...").attr("disabled", "disabled");
+            
             var student_data = $("input[name='student_data[]']").map(function () {
-                if ($(this).is(":checked")){
-                return {'id':$(this).val(), 'status': 1};
-
+                return {
+                    'id': $(this).val(),
+                    'status': $(this).is(":checked") ? 1 : 0
+                };
+            }).get();
+            
+            student_data = JSON.stringify(student_data);
+            var attendance_date = $("#attendance_date").val();
+            var subject = $("#subject").val();
+            var session = $("#session").val();
+            
+            $.ajax({
+                url: "{% url 'save_attendance' %}",
+                type: 'POST',
+                data: {
+                    date: attendance_date,
+                    subject_id: subject,
+                    session_id: session,
+                    student_ids: student_data,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
                 }
-                return {'id':$(this).val(), 'status': 0};
+            }).done(function (response) {
+                if (response === 'OK') {
+                    $("#success_attendance").html("<i class='fas fa-check'></i> Attendance Saved Successfully!");
+                    $("#success_attendance").show();
+                    setTimeout(function() { location.reload(); }, 1500);
+                } else {
+                    alert("Error saving attendance");
+                    $("#save_attendance").text("Save Attendance").removeAttr("disabled");
+                }
+            }).fail(function (response) {
+                alert("Error in saving attendance");
+                $("#save_attendance").text("Save Attendance").removeAttr("disabled");
+            });
+        });
 
-            }).get()
-      
-            student_data = JSON.stringify(student_data)
-            var attendance_date = $("#attendance_date").val()
+        $(document).on('click', '#saveEditedAttendance', function () {
+            $(this).text("Saving...").attr("disabled", "disabled");
+            
+            var student_data = $("input[name='edit_student_data[]']").map(function () {
+                return {
+                    'id': $(this).val(),
+                    'status': $(this).is(":checked") ? 1 : 0
+                };
+            }).get();
+            
+            student_data = JSON.stringify(student_data);
+            var attendance_date = $("#edit_attendance_date").val();
+            
             $.ajax({
                 url: "{% url 'update_attendance' %}",
                 type: 'POST',
                 data: {
                     date: attendance_date,
                     student_ids: student_data,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
                 }
             }).done(function (response) {
-                if (response == 'OK'){
-                    alert("Updated")
-                }else{
-                    alert("Error. Please try again")
+                if (response === 'OK' || response.status === 200) {
+                    $("#editModal").modal('hide');
+                    alert("Attendance Updated Successfully!");
+                    location.reload();
+                } else {
+                    alert("Error updating attendance");
                 }
-                location.reload()
-                
+                $("#saveEditedAttendance").text("Save Changes").removeAttr("disabled");
             }).fail(function (response) {
-                alert("Error in saving attendance")
-            })
+                alert("Error in updating attendance");
+                $("#saveEditedAttendance").text("Save Changes").removeAttr("disabled");
+            });
+        });
+    });
 
-        })
-    })
+    function loadStudentsForNewAttendance(subject, session, date) {
+        $.ajax({
+            url: "{% url 'get_students' %}",
+            type: 'GET',
+            data: { subject_id: subject, session_id: session }
+        }).done(function (response) {
+            var students = JSON.parse(response);
+            displayStudentAttendance(students, true);
+        });
+    }
+
+    function displayStudentAttendance(students, isNew) {
+        var div_data = "<h5><i class='fas fa-users'></i> Student Attendance</h5><hr/><div class='row'>";
+        
+        for (var key in students) {
+            var isChecked = students[key]['status'] === true || students[key]['status'] === 1;
+            
+            div_data += "<div class='col-lg-4 col-md-6 mb-3'>";
+            div_data += "<div class='custom-control custom-checkbox' style='background: rgba(108, 92, 231, 0.1); padding: 10px; border-radius: 10px;'>";
+            div_data += "<input type='checkbox' class='custom-control-input' " + (isChecked ? "checked='checked'" : "") + " name='student_data[]' value='" + students[key]['id'] + "' id='student_" + students[key]['id'] + "' />";
+            div_data += "<label for='student_" + students[key]['id'] + "' class='custom-control-label' style='cursor: pointer; width: 100%;'>";
+            div_data += "<div class='d-flex justify-content-between align-items-center'>";
+            div_data += "<span>" + students[key]['name'] + "</span>";
+            div_data += "<span class='badge badge-" + (isChecked ? 'success' : 'danger') + "'>" + (isChecked ? 'Present' : 'Absent') + "</span>";
+            div_data += "</div></label></div></div>";
+        }
+        
+        div_data += "</div>";
+        div_data += "<div class='form-group mt-3'><button id='save_attendance' class='btn btn-success btn-block' type='button'><i class='fas fa-save'></i> Save Attendance</button></div>";
+        
+        $("#student_data").html(div_data);
+        $("#student_data").show();
+    }
+
+    function editAttendance(attendanceId) {
+        $.ajax({
+            url: "{% url 'get_student_attendance' %}",
+            type: 'POST',
+            data: {
+                attendance_date_id: attendanceId,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            }
+        }).done(function (response) {
+            var students = JSON.parse(response);
+            var date = $("#row-" + attendanceId + " td:first-child").text().trim();
+            
+            var modal_content = "<input type='hidden' id='edit_attendance_date' value='" + attendanceId + "'>";
+            modal_content += "<h6>Attendance Date: <strong>" + date + "</strong></h6>";
+            modal_content += "<hr/><div class='row'>";
+            
+            for (var key in students) {
+                var isChecked = students[key]['status'] === true || students[key]['status'] === 1;
+                
+                modal_content += "<div class='col-lg-6 mb-2'>";
+                modal_content += "<div class='custom-control custom-checkbox' style='background: rgba(108, 92, 231, 0.1); padding: 10px; border-radius: 10px;'>";
+                modal_content += "<input type='checkbox' class='custom-control-input' " + (isChecked ? "checked='checked'" : "") + " name='edit_student_data[]' value='" + students[key]['id'] + "' id='edit_student_" + students[key]['id'] + "' />";
+                modal_content += "<label for='edit_student_" + students[key]['id'] + "' class='custom-control-label' style='cursor: pointer; width: 100%;'>";
+                modal_content += "<div class='d-flex justify-content-between align-items-center'>";
+                modal_content += "<span>" + students[key]['name'] + "</span>";
+                modal_content += "<span class='badge badge-" + (isChecked ? 'success' : 'danger') + "'>" + (isChecked ? 'Present' : 'Absent') + "</span>";
+                modal_content += "</div></label></div></div>";
+            }
+            
+            modal_content += "</div>";
+            
+            $("#editModalBody").html(modal_content);
+            $("#editModal").modal('show');
+        }).fail(function (response) {
+            alert("Error loading attendance data");
+        });
+    }
 </script>
+
+<style>
+    .card { background: linear-gradient(145deg, #1a1a2e, #0f0f1a); border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+    .card-header { background: transparent; border-bottom: 1px solid rgba(255,255,255,0.1); border-radius: 15px 15px 0 0 !important; }
+    .card-title { color: #ffffff; font-weight: 600; margin: 0; }
+    .table { color: #e5e7eb; }
+    .table thead th { border-bottom: 2px solid rgba(108, 92, 231, 0.3); color: #8a7cf0; text-transform: uppercase; font-size: 12px; }
+    .table td { border-top: 1px solid rgba(255,255,255,0.05); vertical-align: middle; }
+    .badge-success { background: linear-gradient(135deg, #00b894, #00cec9); }
+    .badge-danger { background: linear-gradient(135deg, #d63031, #e17055); }
+    .badge-warning { background: linear-gradient(135deg, #fdcb6e, #f39c12); }
+    .btn-primary { background: linear-gradient(135deg, #6c5ce7, #00cec9); border: none; border-radius: 10px; padding: 10px 20px; }
+    .btn-primary:hover { background: linear-gradient(135deg, #8a7cf0, #00cec9); transform: translateY(-2px); }
+    .btn-success { background: linear-gradient(135deg, #00b894, #00cec9); border: none; border-radius: 10px; }
+    .btn-sm { padding: 5px 15px; border-radius: 8px; }
+    .form-control { background: #020617; border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 10px; }
+    .form-control:focus { background: #020617; color: white; border-color: #6c5ce7; }
+    .custom-control-input:checked ~ .custom-control-label::before { background: linear-gradient(135deg, #6c5ce7, #00cec9); border-color: #6c5ce7; }
+    .modal-header { border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .modal-footer { border-top: 1px solid rgba(255,255,255,0.1); }
+    .close { color: white; opacity: 0.7; }
+    .close:hover { opacity: 1; }
+</style>
 {% endblock custom_js %}

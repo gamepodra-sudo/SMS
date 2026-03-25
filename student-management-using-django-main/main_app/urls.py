@@ -117,6 +117,8 @@ urlpatterns = [
     path("student/home/", student_views.student_home, name='student_home'),
     path("student/view/attendance/", student_views.student_view_attendance,
          name='student_view_attendance'),
+    path("student/attendance/percentage/", student_views.student_view_attendance_percentage,
+         name='student_attendance_percentage'),
     path("student/apply/leave/", student_views.student_apply_leave,
          name='student_apply_leave'),
     path("student/feedback/", student_views.student_feedback,
